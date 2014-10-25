@@ -1,5 +1,4 @@
-# Step1. Merges the training and the test sets to create one data set.
-# setwd("~/Desktop/Online Coursera/Coursera-Getting-and-Cleaning-Data/peer_assessment/")
+# 1. Merge the training and the test sets to create one data set.
 trainData <- read.table("./data/train/X_train.txt")
 dim(trainData) # 7352*561
 head(trainData)
@@ -26,13 +25,12 @@ meanStdIndices <- grep("mean\\(\\)|std\\(\\)", features[, 2])
 length(meanStdIndices) # 66
 joinData <- joinData[, meanStdIndices]
 dim(joinData) # 10299*66
-names(joinData) <- gsub("\\(\\)", "", features[meanStdIndices, 2]) # remove "()"
-names(joinData) <- gsub("mean", "Mean", names(joinData)) # capitalize M
-names(joinData) <- gsub("std", "Std", names(joinData)) # capitalize S
-names(joinData) <- gsub("-", "", names(joinData)) # remove "-" in column names 
+names(joinData) <- gsub("\\(\\)", "", features[meanStdIndices, 2]) 
+names(joinData) <- gsub("mean", "Mean", names(joinData)) 
+names(joinData) <- gsub("std", "Std", names(joinData)) 
+names(joinData) <- gsub("-", "", names(joinData)) 
 
-# Step3. Uses descriptive activity names to name the activities in 
-# the data set
+# 2. Uses descriptive activity names to name the activities
 activity <- read.table("./data/activity_labels.txt")
 activity[, 2] <- tolower(gsub("_", "", activity[, 2]))
 substr(activity[2, 2], 8, 8) <- toupper(substr(activity[2, 2], 8, 8))
@@ -41,15 +39,13 @@ activityLabel <- activity[joinLabel[, 1], 2]
 joinLabel[, 1] <- activityLabel
 names(joinLabel) <- "activity"
 
-# Step4. Appropriately labels the data set with descriptive activity 
-# names. 
+# 3. Label dataset with descriptive names for activities
 names(joinSubject) <- "subject"
 cleanedData <- cbind(joinSubject, joinLabel, joinData)
 dim(cleanedData) # 10299*68
-write.table(cleanedData, "merged_data.txt") # write out the 1st dataset
+write.table(cleanedData, "merged_data.txt") 
 
-# Step5. Creates a second, independent tidy data set with the average of 
-# each variable for each activity and each subject. 
+# 4. Create  second, independent tidy data set with the means of each var for activity and subject
 subjectLen <- length(table(joinSubject)) # 30
 activityLen <- dim(activity)[1] # 6
 columnLen <- dim(cleanedData)[2]
@@ -68,7 +64,4 @@ for(i in 1:subjectLen) {
     }
 }
 head(result)
-write.table(result, "data_with_means.txt") # write out the 2nd dataset
-
-# data <- read.table("./data_with_means.txt")
-# data[1:12, 1:3]
+write.table(result, "data_with_means.txt") 
